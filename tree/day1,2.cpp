@@ -206,4 +206,69 @@ int heightOfBinaryTree(TreeNode<int> *root)
 }
 
 
-Q7: 
+Q7: Top view of Binary Tree
+
+class Solution
+{
+    public:
+    //Function to return a list of nodes visible from the top view 
+    //from left to right in Binary Tree.
+    vector<int> topView(Node *root)
+    {
+        //Your code here
+        map<int, int> mp;
+        vector<int> ans;
+        if(root == NULL){
+            return ans;
+        }
+        queue<pair<Node*, int> > q;
+        q.push(make_pair(root, 0));
+        
+        while(!q.empty()){
+            pair<Node*, int> node = q.front();
+            Node* frontNode = node.first;
+            int hd = node.second;
+            
+            q.pop();
+            
+            if(mp.find(hd) == mp.end()){
+                mp[hd] = frontNode->data;
+            }
+            
+            if(frontNode->left){
+                q.push(make_pair(frontNode->left, hd-1));
+            }
+            if(frontNode->right){
+                q.push(make_pair(frontNode->right, hd+1));
+            }
+        }
+        for(auto it : mp){
+            ans.push_back(it.second);
+        }
+        return ans;
+    }
+};
+
+
+Q8: Find Bottom Left Tree Value
+
+class Solution {
+public:
+    int findBottomLeftValue(TreeNode* root) {
+        queue<TreeNode* > q;
+        q.push(root);
+
+        TreeNode* node;
+        while(!q.empty()){
+            node = q.front();
+            q.pop();
+            if(node->right){
+                q.push(node->right);
+            }
+            if(node->left){
+                q.push(node->left);
+            }
+        }
+        return  node->val;
+    }
+};
