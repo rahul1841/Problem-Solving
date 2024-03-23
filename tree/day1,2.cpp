@@ -159,3 +159,51 @@ public:
     }
 };
 
+
+Q5: same Tree
+
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(p == NULL && q == NULL){
+            return true;
+        }
+        if(p == NULL && q != NULL){
+            return false;
+        }
+        if(p != NULL && q == NULL){
+            return false;
+        }
+        bool left = isSameTree(p->left, q->left);
+        bool right = isSameTree(p->right, q->right);
+        bool data = (p->val == q->val);
+        
+        if(left && right && data){
+            return true;
+        }
+        return false;
+    }
+};
+
+
+Q6: Height of Binary Tree
+
+void height(TreeNode<int> *root, int &maxh, int currh){
+    if(root == NULL){
+        maxh = max(maxh, currh);
+        return;
+    }
+    height(root->left, maxh, currh+1);
+    height(root->right, maxh, currh+1);
+
+}
+int heightOfBinaryTree(TreeNode<int> *root)
+{
+	// Write your code here.
+    int maxh = 0;
+    height(root, maxh, 0);
+    return maxh;
+}
+
+
+Q7: 
