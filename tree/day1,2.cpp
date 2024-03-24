@@ -1,4 +1,4 @@
-Q: Maximum Depth of Binary Tree
+Q1: Maximum Depth of Binary Tree
 
 using normal recursion: 
 
@@ -270,5 +270,96 @@ public:
             }
         }
         return  node->val;
+    }
+};
+
+
+Q9: Find Bottom left tree Value
+
+class Solution {
+public:
+    int findBottomLeftValue(TreeNode* root) {
+        queue<TreeNode* > q;
+        q.push(root);
+
+        TreeNode* node;
+        while(!q.empty()){
+            node = q.front();
+            q.pop();
+            if(node->right){
+                q.push(node->right);
+            }
+            if(node->left){
+                q.push(node->left);
+            }
+        }
+        return  node->val;
+    }
+};
+
+
+Q10: Serialize and Deserialize Binary Tree
+
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if(root == NULL){
+            return "";
+        }
+        string str;
+        queue<TreeNode*> q;
+        q.push(root);
+
+        while(!q.empty()){
+            TreeNode* node = q.front();
+            q.pop();
+            if(node == NULL) {
+                str.append("#,");
+            }else{
+                str.append(to_string(node->val)+",");
+            }
+            if(node != NULL){
+                q.push(node->left);
+                q.push(node->right);
+            }
+        }
+        return str;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data.size() == 0) return NULL;
+        stringstream s(data);
+        string str;
+        getline(s,str,',');
+        TreeNode* root = new TreeNode(stoi(str));
+        queue<TreeNode*> q;
+        q.push(root);
+
+        while(!q.empty()){
+            TreeNode* node = q.front();
+            q.pop();
+            getline(s,str,',');
+            if(str == "#"){
+                node->left = NULL;
+            }
+            else{
+                TreeNode* leftNode = new TreeNode(stoi(str));
+                node->left = leftNode;
+                q.push(leftNode);
+            }
+            getline(s,str,',');
+            if(str == "#"){
+                node->right = NULL;
+            }
+            else{
+                TreeNode* rightNode = new TreeNode(stoi(str));
+                node->right = rightNode;
+                q.push(rightNode);
+            }
+        }
+        return root;
     }
 };
