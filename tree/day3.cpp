@@ -223,3 +223,133 @@ public:
 
     }
 };
+
+
+Q8 : Step-By-Step Directions From a Binary Tree Node to Another
+
+class Solution {
+public:
+    bool getpath(TreeNode* root, int tar, string& path){
+
+        if(root==NULL) 
+            return false;
+        if(root->val==tar)
+            return true;
+        bool left = getpath(root->left,tar,path);
+        if(left){
+            path += 'L';
+            return true;
+        }
+        bool right = getpath(root->right,tar,path);
+        if(right){
+            path += 'R';
+            return true;
+        }
+        return false;
+    }
+    string getDirections(TreeNode* root, int startValue, int destValue) {
+        //get path from root to startvalue and path is in reverse order
+        string pathstart = "";
+        getpath(root,startValue,pathstart);
+        //root to destination 
+        string pathdest = "";
+        getpath(root,destValue,pathdest);
+        //remove common elements
+        int i=pathstart.size()-1;
+        int j=pathdest.size()-1;
+        while(i>=0 && j>=0 && pathstart[i]==pathdest[j]){
+            pathstart.pop_back();
+            pathdest.pop_back();
+            i--;
+            j--;
+        }
+        i = pathstart.size();
+        for(int j=0; j<i; j++){
+            pathstart[j] = 'U';
+        }
+        reverse(pathdest.begin(),pathdest.end());
+        return pathstart + pathdest;
+    }
+};
+
+
+Q9 : Path Sum
+
+class Solution {
+public:
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        if(root == NULL)
+            return false;
+        
+        if(root->left == NULL && root->right == NULL)
+            return targetSum==root->val;
+        
+        bool left_sum =  hasPathSum(root->left,targetSum-root->val);
+        bool right_sum =  hasPathSum(root->right,targetSum-root->val);
+        
+        return left_sum || right_sum;
+    }
+};
+
+
+Q10: Path Sum II
+
+class Solution {
+public:
+void solve(TreeNode*root,vector<vector<int>>&ans,vector<int>&temp,int target){
+        if(root!=NULL){
+            temp.push_back(root->val);
+            if(root->left==NULL && root->right==NULL && root->val==target){
+                ans.push_back(temp);
+            }
+            solve(root->left,ans,temp,target-root->val);
+            solve(root->right,ans,temp,target-root->val);
+            temp.pop_back();
+        }
+    }
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        vector<vector<int>>ans;
+        vector<int>temp;
+        solve(root,ans,temp,targetSum);
+        return ans;
+    }
+};
+
+
+Q11 : Path Sum III
+
+class Solution {
+public:
+
+    void solve(TreeNode* root, int targetSum,vector<int> ans,int & cnt){
+        if(root == NULL)
+        return;
+
+        ans.push_back(root->val);
+
+        //left
+        solve(root->left,targetSum,ans,cnt);
+        //right
+        solve(root->right,targetSum,ans,cnt);
+
+        int size = ans.size();
+        long long sum = 0;
+        for(int i = size-1;i>=0;i--){
+            sum += ans[i];
+            if(sum == targetSum)
+            cnt++;
+        }
+
+        ans.pop_back();
+
+    }
+    int pathSum(TreeNode* root, int targetSum) {
+        vector<int> ans;
+        int cnt = 0;
+        solve(root,targetSum,ans,cnt);
+        return cnt;
+    }
+};
+
+
+
