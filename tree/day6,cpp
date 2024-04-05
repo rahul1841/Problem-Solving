@@ -1,0 +1,120 @@
+Q1: LCA BST
+
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+
+        
+        while(root!=NULL){
+            if(root->val < p->val && root->val < q->val)
+                root = root->right;
+            
+            else if(root->val > p->val && root->val > q->val)
+                root = root->left;
+            
+            else{
+                return root;
+            }
+        }
+        return NULL;
+    }
+};
+
+Q2: Convert sorted list to BST
+
+class Solution {
+public:
+    TreeNode* sortedListToBST(ListNode* head) {
+    if (!head) return NULL; 
+
+    ListNode* slow = head;
+    ListNode* fast = head;
+    ListNode* prev = NULL;
+
+    while (fast && fast->next) {
+        prev = slow;
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    TreeNode* root = new TreeNode(slow->val);
+
+    if (slow == head) return root;
+
+    prev->next = NULL; 
+    root->left = sortedListToBST(head);
+    root->right = sortedListToBST(slow->next);
+
+    return root;
+    }
+};
+
+Q3: recover BST
+
+class Solution {
+public:
+    void inorder(TreeNode* root,vector<int>&arr){
+        if(root==NULL){
+            return;
+        }
+        inorder(root->left,arr);
+        arr.push_back(root->val);
+        inorder(root->right,arr);
+    }
+    int index=0;
+    void validate(TreeNode* root,vector<int>&arr){
+        if(root==NULL){
+            return;
+        }
+        validate(root->left,arr);
+        //if value not same then swap it
+        if(root->val!=arr[index]){
+            swap(root->val,arr[index]);
+        }
+        //update the index
+        index++;
+        validate(root->right,arr);
+    }
+    void recoverTree(TreeNode* root) {
+
+        vector<int>nodes;
+        inorder(root,nodes);
+        sort(nodes.begin(),nodes.end());
+        validate(root,nodes);
+    }
+};
+
+Q4:  Two Sum IV - Input is a BST
+
+class Solution {
+public:
+    void inorder(TreeNode* root,vector<int> &inorderVal){
+        if(root == NULL)
+            return;
+        
+        inorder(root->left,inorderVal);
+        inorderVal.push_back(root->val);
+        inorder(root->right,inorderVal);
+        
+    }
+    
+    bool findTarget(TreeNode* root, int k) {
+        vector<int> inorderVal;
+        inorder(root,inorderVal);
+        
+        int i = 0; int j = inorderVal.size()-1;
+        
+        while(i<j){
+            int sum = inorderVal[i]+inorderVal[j];
+            if(sum == k)
+                return true;
+            
+            else if(sum>k)
+                j--;
+            
+            else
+                i++;
+        }
+        return false;
+    }
+};
