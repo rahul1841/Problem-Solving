@@ -118,3 +118,90 @@ public:
         return false;
     }
 };
+
+Q5: construct BST from preorder
+
+    TreeNode* build(vector<int>& preorder,int& i,int bound){
+        if(i>=preorder.size() || preorder[i]>bound){
+            return NULL;
+        }
+        TreeNode* root=new TreeNode(preorder[i++]);
+        root->left=build(preorder,i,root->val);
+        root->right=build(preorder,i,bound);
+        return root;
+    }
+    TreeNode* bstFromPreorder(vector<int>& preorder) {
+        int i=0;
+        return build(preorder,i,INT_MAX);
+    }
+
+    Q6: Kth smallest element in BST
+
+        void inorder(TreeNode* root,vector<int>& ans){
+        if(root==NULL){
+            return ;
+        }
+        inorder(root->left,ans);
+        ans.push_back(root->val);
+        inorder(root->right,ans);
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        vector<int>ans;
+        inorder(root,ans);
+        int n=ans.size();
+        return ans[k-1];
+
+    }
+
+    Q7: merge 2 BST
+
+    class Solution
+{
+    public:
+    //Function to return a list of integers denoting the node 
+    //values of both the BST in a sorted order.
+    void inorder(Node* root,vector<int>& ans){
+        if(root==NULL){
+            return;
+        }
+        inorder(root->left,ans);
+        ans.push_back(root->data);
+        inorder(root->right,ans);
+    }
+    vector<int>merger(vector<int>ans1,vector<int>ans2,vector<int>&res){
+        int i=0;
+        int j=0;
+        int n=ans1.size();
+        int m=ans2.size();
+        while(i<n && j<m){
+            if(ans1[i]<ans2[i]){
+                res.push_back(ans1[i]);
+                i++;
+            }
+            else{
+                res.push_back(ans2[j]);
+                j++;
+            }
+        }
+        while(i<n){
+            res.push_back(ans1[i]);
+            i++;
+        }
+        while(j<m){
+            res.push_back(ans2[j]);
+            j++;
+        }
+        return res;
+    }
+    vector<int> merge(Node *root1, Node *root2)
+    {
+       vector<int>ans1;
+       inorder(root1,ans1);
+       vector<int>ans2;
+       inorder(root2,ans2);
+       vector<int>res;
+       merger(ans1,ans2,res);
+       sort(res.begin(),res.end());
+       return res;
+    }
+};
