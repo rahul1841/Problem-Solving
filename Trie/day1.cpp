@@ -1,53 +1,70 @@
 Q1: Implement Trie
 
-#include <bits/stdc++.h>
-using namespace std;
+struct Node {
+    Node* links[26];
+    bool flag = false;
+    
+    bool containsKey(char ch){
+        return ( links[ch-'a'] != NULL);
+    }
+    
+    void put(char ch, Node* node){
+        links[ch-'a'] = node;
+    }
+    
+    Node* get(char ch){
+        return links[ch-'a'];
+    }
+    
+    void setEnd(){
+        flag = true;
+    }
+    
+    bool isEnd(){
+        return flag;
+    }
+    
+};
 
+// TC for all is O(length)
 class Trie {
+private: 
+    Node* root;
 public:
-    Trie* children[26];
-    bool isEnd;
     Trie() {
-        for (int i = 0; i < 26; i++) {
-            children[i] = NULL;
-        }
-        isEnd = false;
+        root = new Node();
     }
     
     void insert(string word) {
-        Trie* current = this;
-        for (int i = 0; i < word.length(); i++) {
-            char ch = word[i];
-            if (current->children[ch - 'a'] == NULL) {
-                current->children[ch - 'a'] = new Trie();
+        Node* node = root;
+        for(int i = 0; i<word.length(); i++){
+            // not contain key
+            if(!node->containsKey(word[i])){
+                node->put(word[i], new Node());
             }
-            current = current->children[ch - 'a'];
+            node = node->get(word[i]);
         }
-        current->isEnd = true;
+        node->setEnd();
     }
     
     bool search(string word) {
-         Trie* current = this;
-        for (int i = 0; i < word.length(); i++) {
-            char ch = word[i];
-            if (current->children[ch - 'a'] == NULL) {
+        Node* node = root;
+        for(int i = 0; i<word.length(); i++){
+            if(!node->containsKey(word[i])){
                 return false;
             }
-            current = current->children[ch - 'a'];
+            node = node->get(word[i]);
         }
-        if (current->isEnd == true)
-            return true;
-        return false;
+        return node->isEnd();
     }
     
     bool startsWith(string prefix) {
-         Trie* current = this;
-        for (int i = 0; i < prefix.length(); i++) {
-            char ch = prefix[i];
-            if (current->children[ch - 'a'] == NULL) {
+        Node* node = root;
+        for(int i = 0; i<prefix.length(); i++){
+            if(!node->containsKey(prefix[i])){
                 return false;
             }
-            current = current->children[ch - 'a'];
+            node = node->get(prefix[i]);
         }
         return true;
     }
