@@ -157,59 +157,114 @@ public:
 
 Q3: Replace word
 
-#include <bits/stdc++.h>
-using namespace std;
-
-class TrieNode{
-public:
-    TrieNode *child[26];
-    bool isEnd;
+struct Node{
+    Node* links[26];
+    bool isEnd = false;
     
-    TrieNode(){
-        this->isEnd = false;
-        for(int i=0; i<26; i++) this->child[i]= NULL;
+    bool containsKey(char ch){
+    return (links[ch-'a'] != NULL);
+    }
+
+    
+    void put(char ch, Node* node){
+        links[ch-'a'] = node;
+    }
+    
+    Node* get(char ch){
+    return links[ch-'a'];
+    }
+
+    
+    void setEnd(){
+        isEnd = true;
+    }
+    
+    bool getEnd(){
+        return isEnd;
+    }
+};
+
+class Trie{
+    private: Node* root;
+    
+    public: 
+    Trie(){
+        root = new Node();
+    }
+    
+void insert(string &word){
+    Node* node = root;
+    for(int i = 0; i < word.size(); i++){
+        if(!node->containsKey(word[i])){
+            node->put(word[i], new Node());
+        }
+        node = node->get(word[i]);
+    }
+    node->setEnd();
+}
+
+    
+    string find(string &word){
+        Node* node = root;
+        string ans = "";
+        for(int i = 0; i<word.size(); i++){
+            if(node->getEnd()) break;
+            if(node->containsKey(word[i])){
+                ans += word[i];
+                node = node->get(word[i]);
+            }
+            else{
+                break;
+            }
+        }
+        if(node->getEnd()){
+            return ans;
+        }
+        else{
+            return "";
+        }
     }
 };
 
 class Solution {
 public:
-    TrieNode *newNode;
-    string check(string word){
-        TrieNode *t = newNode;
-        string s = "";
-        
-        for(auto i : word){
-            if(!t->child[i-'a']) break;
-            s += i;
-            t = t->child[i-'a'];
-            if(t->isEnd) return s;
-        }
-        return word;
-    }
-    void insert(string word){
-        TrieNode *temp = newNode;
-        
-        for(auto l : word){
-            if(!temp->child[l-'a']) temp->child[l-'a'] = new TrieNode();
-            temp = temp->child[l-'a'];
-        }
-        
-        temp->isEnd = true;
-    }
     string replaceWords(vector<string>& dictionary, string sentence) {
-        newNode = new TrieNode();
-        for(auto s : dictionary){
-            insert(s);
-        } 
-        stringstream ss(sentence);
-        string word = "", ans="";
+        int n = dictionary.size();
+        int m = sentence.size();
         
-        while(ss>>word){
-            ans += check(word);
-            ans += ' ';
+        Trie trie;
+        
+        for(int i = 0; i<n; i++){
+            trie.insert(dictionary[i]);
         }
-        ans.pop_back();
         
+        string temp = "";
+        string ans = "";
+for(int i = 0; i < m; i++){
+    if(sentence[i] != ' '){
+        temp += sentence[i];
+    }
+    else{
+        string temp1 = trie.find(temp);
+        if(temp1 == ""){
+            ans += temp;
+        }
+        else{
+            ans += temp1;
+        }
+        ans += ' ';
+        temp = "";
+    }
+    if(i == m - 1){
+        string temp1 = trie.find(temp);
+        if(temp1 == ""){
+            ans += temp;
+        }
+        else{
+            ans += temp1;
+        }
+    }
+}
         return ans;
     }
 };
