@@ -63,23 +63,53 @@ public:
 
 Q3 number-of-provinces
 
+using BFS and DFS both - 
 class Solution {
 public:
-    void dfs(int i,vector<vector<int>>& isConnected,vector<int>&vis){
-        vis[i]=1;
-        for(int j=0;j<isConnected.size();j++){
-            if(isConnected[i][j]==1 && vis[j]==0){
-                dfs(j,isConnected,vis);
+    void dfs(int start, vector<int> &vis, vector<int> adjLS[]){
+        vis[start] = 1;
+        for(auto it : adjLS[start]){
+            if(!vis[it]){
+                dfs(it, vis, adjLS);
             }
         }
     }
+    void bfs(int node, vector<int> &vis, vector<int> adjLS[]){
+        queue<int> q;
+        q.push(node);
+        vis[node] = 1;
+
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            for(auto it : adjLS[node]){
+                if(!vis[it]){
+                    vis[it] = 1;
+                    q.push(it);
+                }
+            }
+        }
+    }
+
     int findCircleNum(vector<vector<int>>& isConnected) {
-        vector<int>vis(isConnected.size(),0);
-        int cnt=0;
-        for(int i=0;i<isConnected.size();i++){
-            if(vis[i]==0){
+        int n = isConnected.size();
+        vector<int> adjLS[n];
+        for(int i = 0; i<n; i++){
+            for(int j = 0; j<n; j++){
+                if(isConnected[i][j] == 1 && i != j){
+                    adjLS[i].push_back(j);
+                    adjLS[j].push_back(i);
+                }
+            }
+        }
+        vector<int> vis(n, 0);
+
+        int cnt = 0;
+        for(int i = 0; i<n; i++){
+            if(vis[i] == 0){
                 cnt++;
-                dfs(i,isConnected,vis);
+               // dfs(i, vis, adjLS);
+                bfs(i, vis, adjLS);
             }
         }
         return cnt;
