@@ -1,34 +1,65 @@
 Q1 find-if-path-exists-in-graph
 
+using BFS - 
+
 class Solution {
 public:
-    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
-        unordered_map<int,vector<int>>mp;
-        for(auto it:edges){
-            mp[it[0]].push_back(it[1]);
-            mp[it[1]].push_back(it[0]);
-        }
-        vector<bool>vis(n,0);
+    bool validPath(int n, vector<vector<int>>& edges, int source,
+                   int destination) {
+        vector<int> adj[n+1];
+        vector<int> vis(n, 0); 
         vis[source]=1;
-        queue<int>q;
+        for (auto e : edges) {
+            int u = e[0], v = e[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        queue<int> q;
         q.push(source);
         while(!q.empty()){
-            int front=q.front();
+            int node = q.front();
             q.pop();
-            if(front==destination){
-                return true;
-            }
-            for(auto it:mp[front]){
-                if(!vis[it]){
-                    vis[it]=1;
+            if (node == destination) return true;
+            for(auto it : adj[node]){
+                if (!vis[it]){
                     q.push(it);
+                    vis[it]=1;
                 }
             }
         }
         return false;
-
     }
 };
+
+using DFS - 
+
+class Solution {
+public:
+  bool dfs(int node, vector<int> adj[], vector<int> &vis, int destination){
+      vis[node] = 1;
+      if(node == destination) return true;
+      
+      for(auto it : adj[node]){
+          if(!vis[it]){
+            if (dfs(it, adj, vis, destination))
+                return true; // Return true if a valid path is found
+        }    
+      }
+      return false;
+  }
+    bool validPath(int n, vector<vector<int>>& edges, int source,
+                   int destination) {
+        vector<int> adj[n+1];
+        vector<int> vis(n, 0); 
+        for (auto e : edges) {
+            int u = e[0], v = e[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        return  dfs(source, adj, vis, destination );
+    }
+};
+
 
 Q3 number-of-provinces
 
