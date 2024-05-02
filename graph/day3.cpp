@@ -1,3 +1,84 @@
+Q2 course-schedule
+
+    class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int>adj[numCourses];
+        for(auto it : prerequisites){
+            adj[it[0]].push_back(it[1]);
+        }
+        vector<int>indegree(numCourses,0);
+        for(int i=0;i<numCourses;i++){
+            for(auto it:adj[i]){
+                indegree[it]++;
+            }
+        }
+        queue<int>q;
+        for(int i=0;i<numCourses;i++){
+            if(indegree[i]==0){
+                q.push(i);
+            }
+        }
+        vector<int>topo;
+        while(!q.empty()){
+            int node=q.front();
+            q.pop();
+            topo.push_back(node);
+            for(auto it:adj[node]){
+                indegree[it]--;
+                if(indegree[it]==0){
+                    q.push(it);
+                }
+            }
+        }
+        if(topo.size()==numCourses){
+            return true;
+        }
+        return false;
+    }
+};
+
+Q3 course-schedule-ii
+
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int>adj[numCourses];
+        for(auto it : prerequisites){
+            adj[it[0]].push_back(it[1]);
+        }
+        vector<int>indegree(numCourses,0);
+        for(int i=0;i<numCourses;i++){
+            for(auto it:adj[i]){
+                indegree[it]++;
+            }
+        }
+        queue<int>q;
+        for(int i=0;i<numCourses;i++){
+            if(indegree[i]==0){
+                q.push(i);
+            }
+        }
+        vector<int>topo;
+        while(!q.empty()){
+            int node=q.front();
+            q.pop();
+            topo.push_back(node);
+            for(auto it:adj[node]){
+                indegree[it]--;
+                if(indegree[it]==0){
+                    q.push(it);
+                }
+            }
+        }
+        if(topo.size()==numCourses){
+            reverse(topo.begin(),topo.end());
+            return topo;
+        }
+        return {};
+    }
+};
+
 Q6 detect-cycle-in-a-directed-graph
 
 class Solution {
