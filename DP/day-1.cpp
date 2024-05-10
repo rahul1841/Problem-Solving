@@ -86,10 +86,73 @@ public:
 
 Q5 house-robber
 
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 1) {
+            return nums[0];
+        }
+        vector<int> dp(n, 0);
+        dp[0] = nums[0];
+        dp[1] = max(nums[0], nums[1]);
 
+        for(int i=2; i<n; i++) {
+            dp[i] = max(dp[i-1], dp[i-2] + nums[i]);
+        }
+        return dp[n-1];
+    }
+};
 
 Q6 house-robber-ii
 
+class Solution {
+private:
+    int solve(vector<int>& nums, int start, int end)
+    {
+        int curr=0, prev=0, temp;
+        for(int i=start ; i<=end ; i++)
+        {
+            temp = curr;
+            curr = max(curr, prev+nums[i]);
+            prev = temp;
+        }
+        return curr;
+    }
+public:
+    int rob(vector<int>& nums) {
 
+        if(nums.size()==1)
+            return nums[0];
+
+        int ans1 = solve(nums, 0, nums.size()-2);
+        int ans2 = solve(nums, 1, nums.size()-1);
+
+        return max(ans1, ans2);
+    }
+};
 
 Q7 solving-questions-with-brainpower
+
+class Solution {
+public:
+    long long solve(int i, vector<vector<int>>&questions,vector<long long>&dp){
+        if(i>=questions.size()){
+            return INT_MIN;
+        }
+        if(dp[i]!=-1){
+            return dp[i];
+        }
+        long long temp = questions[i][0];
+        if(i+questions[i][1]<questions.size())
+            temp+=solve(i+questions[i][1]+1,questions,dp);
+        long long ntemp = solve(i+1,questions,dp);
+        return dp[i]=max(temp,ntemp);
+
+    }
+    long long mostPoints(vector<vector<int>>& questions) {
+        int n = questions.size();
+        vector<long long> dp(n+1,-1);
+        return solve(0,questions,dp);
+    }
+};
